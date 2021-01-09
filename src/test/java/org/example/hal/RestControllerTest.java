@@ -1,8 +1,10 @@
 package org.example.hal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.example.hal.model.PersonResource;
 import org.example.hal.model.ShapeResource;
+import org.example.hal.serializer.HalTypedResourceModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -43,7 +45,9 @@ public class RestControllerTest {
                 .andExpect(content().string(equalTo("{\"age\":33,\"name\":\"mguerin\",\"gender\":\"male\",\"links\":[{\"rel\":\"self\",\"href\":\"http://local/person\"}]}")))
                 .andReturn().getResponse().getContentAsString();
 
-        var resource = objectMapper.readValue(response, PersonResource.class);
+
+
+        var resource = new ObjectMapper().readValue(response, PersonResource.class);
         assertNotNull(resource);
         assertNotNull(resource.getContent());
         assertTrue(resource.hasLink(IanaLinkRelations.SELF));
@@ -73,7 +77,11 @@ public class RestControllerTest {
                 .andExpect(content().string(equalTo("{\"@type\":\"CIRCLE\",\"x\":2,\"y\":3,\"radius\":5.6,\"extraField\":\"FOR TEST ONLY\",\"links\":[{\"rel\":\"self\",\"href\":\"http://local/shape\"}]}")))
                 .andReturn().getResponse().getContentAsString();
 
-        var resource = objectMapper.readValue(response, ShapeResource.class);
+        var mapper =  new ObjectMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false);
+        mapper.registerModule(new HalTypedResourceModule());
+
+        var resource = mapper.readValue(response, ShapeResource.class);
         assertNotNull(resource);
         assertNotNull(resource.getContent());
         assertTrue(resource.hasLink(IanaLinkRelations.SELF));

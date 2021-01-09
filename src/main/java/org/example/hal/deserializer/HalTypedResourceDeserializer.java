@@ -38,6 +38,17 @@ public class HalTypedResourceDeserializer<T> extends DelegatingDeserializer {
     @Override
     public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
+
+//        // ------------------------------------------
+//        // TEST change parser -> deserialize OK, but miss content
+//        // ------------------------------------------
+//        ObjectNode node = (ObjectNode) p.readValueAsTree();
+//        var syntheticParser = new TreeTraversingParser(node, p.getCodec());
+//        syntheticParser.nextToken();
+//        return _delegatee.deserialize(syntheticParser, ctxt);
+
+
+
         var extendedContext = ExtraContext.of(ctxt, _delegatee.handledType(), _delegatee);
 
         Object result;
@@ -73,12 +84,7 @@ public class HalTypedResourceDeserializer<T> extends DelegatingDeserializer {
         ownNode.replace(exctxt.unwrappedPropertyName, unwrappedNode);
 
 
-
-
-
-//        //return (T) p.getCodec().treeToValue(node, type.getRawClass());
-//
-        var syntheticParser = new TreeTraversingParser(ownNode);
+        var syntheticParser = new TreeTraversingParser(ownNode, p.getCodec());
         syntheticParser.nextToken();
 
         return (T) exctxt.beanDeserializer.deserialize(syntheticParser, exctxt.ctxt);
