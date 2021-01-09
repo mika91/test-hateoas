@@ -47,21 +47,68 @@ public class HalTypedResourceDeserializer<T> extends DelegatingDeserializer {
 //        syntheticParser.nextToken();
 //        return _delegatee.deserialize(syntheticParser, ctxt);
 
+       // return oldDeser(p, ctxt);
+        return myOwnDeserilizer(p, ctxt);
 
 
+
+    }
+
+    private T oldDeser(JsonParser parser, DeserializationContext ctxt) throws IOException {
         var extendedContext = ExtraContext.of(ctxt, _delegatee.handledType(), _delegatee);
 
         Object result;
         if (extendedContext.isPresent()) {
-            result = customDeser(p, extendedContext.get());
+            result = customDeser(parser, extendedContext.get());
         } else {
-            result = _delegatee.deserialize(p, ctxt);
+            result = _delegatee.deserialize(parser, ctxt);
         }
 
 
-        return result;
-
+        return (T) result;
     }
+
+    // inspired by: https://stackoverflow.com/a/58353627
+    private T myOwnDeserilizer(JsonParser parser, DeserializationContext ctxt) throws IOException {
+
+        var type = ctxt.getTypeFactory().constructType(_delegatee.handledType());
+        var description = ctxt.getConfig().introspect(type);
+
+
+        // get content property
+        var contentProperty = description.findProperties().stream()
+                .filter(p->p.getName().equals("content"))
+                .findFirst()
+                .orElseThrow(()->new IllegalStateException("todo")); // todo
+
+        // and other ones
+        var otherProperties = description.findProperties().stream()
+                .filter(p->p != contentProperty)
+                .map(BeanPropertyDefinition::getName)
+                .collect(Collectors.toSet());
+
+        // first deserilize in object node
+        ObjectNode node = (ObjectNode) parser.readValueAsTree();
+
+        var reformatted = new ObjectNode(ctxt.getNodeFactory());
+
+
+        node.fields().forEachRemaining( field -> {
+            if (otherProperties.contains(field.getKey())) {
+                reformatted.replace(field.getKey(), field.getValue());
+            }
+        });
+
+        reformatted.replace("content", node);
+
+
+        // recreate a json parser
+        var treeParser = new TreeTraversingParser(reformatted, parser.getCodec());
+        treeParser.nextToken();
+
+        return (T) _delegatee.deserialize(treeParser, ctxt);
+    }
+
 
     private T customDeser(JsonParser p, ExtraContext exctxt) throws IOException {
 
@@ -129,6 +176,7 @@ public class HalTypedResourceDeserializer<T> extends DelegatingDeserializer {
 
             // init
             var description = ctxt.getConfig().introspect(result.type);
+
 
             List<JsonUnwrapped> tempUnwrappedAnnotation = new ArrayList<>();
 
