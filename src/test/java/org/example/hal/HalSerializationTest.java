@@ -26,7 +26,9 @@ public class HalSerializationTest {
     public void setup(){
         objectMapper = new ObjectMapper();
 //
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        // deserilization : Unrecognized field "@type"
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         // for deserilization -> ADD a mixin to remove JsonUNwrapped annotation ?
         objectMapper.configure(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS, false);
