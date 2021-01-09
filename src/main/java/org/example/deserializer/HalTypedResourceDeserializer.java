@@ -23,28 +23,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
+public class HalTypedResourceDeserializer<T> extends DelegatingDeserializer {
 
 
-    public SinglePolyUnwrappedDeserializer(JsonDeserializer<?> source){
+    public HalTypedResourceDeserializer(JsonDeserializer<?> source){
         super(source);
     }
 
-//    @Override
-//    public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) throws JsonMappingException {
-//        return new SinglePolyUnwrappedDeserializerImp(ctxt, _source);
-//    }
-
-
-    //    @Override
-//    public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-//       //throw new IllegalStateException("not implemented"); // TODO
-//        return _source.deserialize(p, ctxt);
-//    }
-
     @Override
     protected JsonDeserializer<?> newDelegatingInstance(JsonDeserializer<?> newDelegatee) {
-        return new SinglePolyUnwrappedDeserializer(newDelegatee);
+        return new HalTypedResourceDeserializer(newDelegatee);
     }
 
     @Override
@@ -53,8 +41,8 @@ public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
         var extendedContext = ExtraContext.of(ctxt, _delegatee.handledType(), _delegatee);
 
         Object result;
-        if (extendedContext.isPresent()){
-            result =  customDeser(p, extendedContext.get());
+        if (extendedContext.isPresent()) {
+            result = customDeser(p, extendedContext.get());
         } else {
             result = _delegatee.deserialize(p, ctxt);
         }
@@ -62,49 +50,7 @@ public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
 
         return result;
 
-//
-//        customDeser(p, extendedContext);
-//
-//
-//        return null;
     }
-
-//    @Override
-//    public JsonDeserializer<Object> unwrappingDeserializer(NameTransformer unwrapper) {
-//        return null;
-//    }
-//
-//    @Override
-//    public BeanDeserializerBase withObjectIdReader(ObjectIdReader oir) {
-//        return null;
-//    }
-//
-//    @Override
-//    public BeanDeserializerBase withIgnorableProperties(Set<String> ignorableProps) {
-//        return null;
-//    }
-//
-//    @Override
-//    protected BeanDeserializerBase asArrayDeserializer() {
-//        return null;
-//    }
-//
-//    @Override
-//    public Object deserializeFromObject(JsonParser p, DeserializationContext ctxt) throws IOException {
-//        return null;
-//    }
-//
-//    @Override
-//    protected Object _deserializeUsingPropertyBased(JsonParser p, DeserializationContext ctxt) throws IOException {
-//        return null;
-//    }
-
-//    @Override
-//    public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) throws JsonMappingException {
-//      return _source;
-//       // return new SinglePolyUnwrappedDeserializerImp(ctxt, _source);
-//    }
-
 
     private T customDeser(JsonParser p, ExtraContext exctxt) throws IOException {
 
@@ -134,10 +80,6 @@ public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
 //
         var syntheticParser = new TreeTraversingParser(ownNode);
         syntheticParser.nextToken();
-////        return beanDeserializer.deserialize(syntheticParser, ctxt);
-//
-//
-//        return _source.deserialize(syntheticParser, ctxt);
 
         return (T) exctxt.beanDeserializer.deserialize(syntheticParser, exctxt.ctxt);
     }

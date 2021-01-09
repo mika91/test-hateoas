@@ -18,13 +18,13 @@ public class HalTypedResourceDeserializerModifier extends BeanDeserializerModifi
     public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config, BeanDescription beanDesc, JsonDeserializer<?> deserializer) {
 
         // override HalResource serializer to fix content polymorphism serialization/deserialization
-        if (deserializer != null && deserializer instanceof BeanDeserializerBase && HalResource.class.isAssignableFrom(deserializer.handledType())
-                &&  beanDesc != null && HalResource.class.isAssignableFrom(beanDesc.getBeanClass())) {
+        if (deserializer instanceof BeanDeserializerBase && HalResource.class.isAssignableFrom(deserializer.handledType())
+                && beanDesc != null && HalResource.class.isAssignableFrom(beanDesc.getBeanClass())) {
 
 
             // TODO: logic to kown it it's a polymorphic bean
 
-            return new SinglePolyUnwrappedDeserializer((BeanDeserializerBase) deserializer);
+            return new HalTypedResourceDeserializer((BeanDeserializerBase) deserializer);
         }
 
         return deserializer;
