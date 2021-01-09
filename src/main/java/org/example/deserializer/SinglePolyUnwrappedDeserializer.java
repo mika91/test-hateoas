@@ -139,8 +139,6 @@ public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
 //
 //        return _source.deserialize(syntheticParser, ctxt);
 
-        //return (T) syntheticParser.readValueAs(exctxt.type.getRawClass());
-
         return (T) exctxt.beanDeserializer.deserialize(syntheticParser, exctxt.ctxt);
     }
 
@@ -175,9 +173,6 @@ public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
 
         public static Optional<ExtraContext> of(DeserializationContext ctxt, Class<?> type, JsonDeserializer source) throws JsonMappingException {
 
-
-
-
             ExtraContext result = new ExtraContext();
 
             result.ctxt = ctxt;
@@ -207,7 +202,7 @@ public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
                 case 0:
                     return Optional.empty();
 
-                    //throw new IllegalStateException("JsonUnwrapped properties not found in ${type.typeName}"); // TODO
+                //throw new IllegalStateException("JsonUnwrapped properties not found in ${type.typeName}"); // TODO
                 case 1 : result.unwrappedProperty = unwrappedProperties.get(0); break; // OK
                 default: throw new IllegalStateException("JMultiple @JsonUnwrapped properties found in ${type.typeName}"); // TODO
             }
@@ -232,8 +227,8 @@ public class SinglePolyUnwrappedDeserializer<T> extends DelegatingDeserializer {
             }
 
 
-            result.beanDeserializer =  rawBeanDeserializer;
-            //result.beanDeserializer =  source;
+            //result.beanDeserializer =  rawBeanDeserializer;
+            result.beanDeserializer =  source;
 
 
 
