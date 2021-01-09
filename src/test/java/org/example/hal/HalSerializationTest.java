@@ -5,9 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.example.HalResource;
 import org.example.hal.model.*;
-import org.example.serializer.HalTypedResourceModule;
+import org.example.hal.serializer.HalTypedResourceModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -45,7 +44,7 @@ public class HalSerializationTest {
         circle.setRadius(5.6f);
 
         // resource
-        var resource = new HalResource<Shape>(circle);
+        var resource = new TypedHalResource<Shape>(circle);
         resource.add(Link.of("http://local/shape", IanaLinkRelations.SELF));
 
         // SERIALIZATION
@@ -98,7 +97,7 @@ public class HalSerializationTest {
 
 
         // resource
-        var resource = new HalResource<Person>(pojo);
+        var resource = new TypedHalResource<Person>(pojo);
         resource.add(Link.of("http://local/person", IanaLinkRelations.SELF));
 
         // SERIALIZATION

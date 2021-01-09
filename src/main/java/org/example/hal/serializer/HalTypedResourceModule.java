@@ -1,7 +1,7 @@
-package org.example.serializer;
+package org.example.hal.serializer;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.example.deserializer.HalTypedResourceDeserializerModifier;
+import org.example.hal.deserializer.HalTypedResourceDeserializerModifier;
 
 public class HalTypedResourceModule extends SimpleModule {
 

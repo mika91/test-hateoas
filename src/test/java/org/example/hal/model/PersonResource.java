@@ -2,7 +2,7 @@ package org.example.hal.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.HalResource;
+import org.example.hal.HalResource;
 
 @Data
 @NoArgsConstructor // need for jackson deserialization

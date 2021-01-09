@@ -1,4 +1,4 @@
-package org.example.deserializer;
+package org.example.hal.deserializer;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.JsonParser;

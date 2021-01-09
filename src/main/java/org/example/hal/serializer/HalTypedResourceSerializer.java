@@ -1,4 +1,4 @@
-package org.example.serializer;
+package org.example.hal.serializer;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -7,14 +7,14 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.example.HalResource;
+import org.example.hal.TypedHalResource;
 
 import java.io.IOException;
 
 
 // see https://stackoverflow.com/questions/14714328/jackson-how-to-add-custom-property-to-the-json-without-modifying-the-pojo/15365957#15365957
 
-public class HalTypedResourceSerializer<T extends HalResource<?>> extends StdSerializer<T> {
+public class HalTypedResourceSerializer<T extends TypedHalResource<?>> extends StdSerializer<T> {
 
     private final JsonSerializer<T> _source;
 

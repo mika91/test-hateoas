@@ -1,8 +1,9 @@
-package org.example.hal.mvc;
+package org.example.hal;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.example.serializer.HalTypedResourceModule;
+import org.example.hal.serializer.HalTypedResourceModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
@@ -10,13 +11,11 @@ import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 @Configuration
 public class JacksonConfiguration {
 
-    @Autowired
+    @Autowired(required = true)
     public void configureJackson(ObjectMapper objectMapper) {
 
-        //// default Jackson HAL module (_links, _embedded...)
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-
+        // default Jackson HAL module (_links, _embedded...)
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(new Jackson2HalModule());
 
         // HAL content polymorphism
