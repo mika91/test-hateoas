@@ -12,11 +12,11 @@ public class HalTypedResourceSerializerModifier extends BeanSerializerModifier {
     @Override
     public JsonSerializer<?> modifySerializer(SerializationConfig config, BeanDescription beanDesc, JsonSerializer<?> serializer) {
 
-//        // override HalResource serializer to fix content polymorphism serialization/deserialization
-//        if (serializer != null && HalResource.class.isAssignableFrom(serializer.handledType())
-//                &&  beanDesc != null && HalResource.class.isAssignableFrom(beanDesc.getBeanClass())) {
-//            return new HalTypedResourceSerializer(serializer);
-//        }
+        // override HalResource serializer to fix content polymorphism serialization/deserialization
+        if (serializer != null && HalResource.class.isAssignableFrom(serializer.handledType())
+                &&  beanDesc != null && HalResource.class.isAssignableFrom(beanDesc.getBeanClass())) {
+            return new HalTypedResourceSerializer(serializer);
+        }
 
         return serializer;
     }
