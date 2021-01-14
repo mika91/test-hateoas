@@ -1,22 +1,26 @@
 package org.example.hal;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.lang.Nullable;
 
 @Data
 @NoArgsConstructor
-public class HalResource<T> extends RepresentationModel<HalResource<T>> {
+public class HalResource<T> extends EntityModel<T> {
 
-    @Getter
+    @Override
     @Nullable
     @JsonUnwrapped
-    private T content;
+    @JsonSerialize(using = JsonSerializer.None.class) // f**k off buggy MapSuppressingUnwrappingSerializer
+    public T getContent() {
+        return super.getContent();
+    }
 
     public HalResource(@Nullable T content) {
-        this.content = content;
+      super(content);
     }
 }
